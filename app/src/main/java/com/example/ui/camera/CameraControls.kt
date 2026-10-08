@@ -2,10 +2,12 @@ package com.example.ui.camera
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,6 +47,9 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -432,6 +437,9 @@ fun CameraBottomBar(
     onOpenGallery: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val shutterPressScale = remember { Animatable(1f) }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -440,13 +448,17 @@ fun CameraBottomBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Gallery Thumbnail button
+        // Gallery Thumbnail button with live preview badge
         Box(
             modifier = Modifier
                 .size(54.dp)
                 .clip(CircleShape)
-                .background(Color(0x44FFFFFF))
-                .border(2.dp, Color(0x88FFFFFF), CircleShape)
+                .background(if (recentPhoto != null) Color(0xFF0F172A) else Color(0x44FFFFFF))
+                .border(
+                    width = 2.dp,
+                    color = if (recentPhoto != null) AuraCyanAccent else Color(0x88FFFFFF),
+                    shape = CircleShape
+                )
                 .clickable { onOpenGallery() }
                 .testTag("gallery_thumbnail_button"),
             contentAlignment = Alignment.Center
@@ -454,12 +466,23 @@ fun CameraBottomBar(
             Icon(
                 imageVector = Icons.Default.PhotoLibrary,
                 contentDescription = "معرض الصور",
-                tint = Color.White,
+                tint = if (recentPhoto != null) AuraCyanAccent else Color.White,
                 modifier = Modifier.size(26.dp)
             )
+
+            if (recentPhoto != null) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(12.dp)
+                        .clip(CircleShape)
+                        .background(AuraEmeraldGreen)
+                        .border(1.dp, Color.Black, CircleShape)
+                )
+            }
         }
 
-        // Shutter Button
+        // Shutter Button with tactile animation
         val isVideo = state.captureMode == CaptureMode.CINEMATIC
         val isNight = state.captureMode == CaptureMode.NIGHT
 
@@ -477,6 +500,7 @@ fun CameraBottomBar(
         Box(
             modifier = Modifier
                 .size(80.dp)
+                .scale(shutterPressScale.value)
                 .border(
                     width = 4.dp,
                     color = when {
@@ -489,7 +513,13 @@ fun CameraBottomBar(
                 .padding(6.dp)
                 .clip(CircleShape)
                 .background(Color.Transparent)
-                .clickable { onShutterClick() }
+                .clickable {
+                    coroutineScope.launch {
+                        shutterPressScale.animateTo(0.85f, tween(80))
+                        shutterPressScale.animateTo(1f, spring(dampingRatio = 0.5f, stiffness = 500f))
+                    }
+                    onShutterClick()
+                }
                 .testTag("shutter_button"),
             contentAlignment = Alignment.Center
         ) {

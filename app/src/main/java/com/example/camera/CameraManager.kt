@@ -173,7 +173,7 @@ class CameraManager(private val context: Context) {
             return
         }
 
-        val outputDir = context.cacheDir
+        val outputDir = File(context.filesDir, "photos").apply { mkdirs() }
         val photoFile = File(
             outputDir,
             "AURA_${SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(System.currentTimeMillis())}.jpg"
