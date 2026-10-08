@@ -1,0 +1,6 @@
+{
+  "name": "AuraCam AI",
+  "description": "Smart AI Camera with real-time scene detection, pose guidance, RAW support, HDR stacking, night mode, photo editor, and cloud sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

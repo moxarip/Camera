@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">AuraCam AI</string>
+    <string name="mode_photo">صورة</string>
+    <string name="mode_video">فيديو سينمائي</string>
+    <string name="mode_portrait">بورتريه</string>
+    <string name="mode_night">ليلي فائق</string>
+    <string name="mode_hdr">دمج HDR</string>
+    <string name="mode_pro">احترافي PRO</string>
+    <string name="pose_assistant">مساعد الوضعيات</string>
+    <string name="cloud_backup">النسخ الاحتياطي السحابي</string>
+    <string name="photo_editor">محرر الصور المتقدم</string>
+    <string name="quick_share">مشاركة سريعة</string>
+    <string name="raw_enabled">تم تفعيل صيغة RAW</string>
+    <string name="raw_disabled">صيغة JPEG فائقة</string>
+</resources>

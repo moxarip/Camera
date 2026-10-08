@@ -1,0 +1,42 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Camera Body Silhouette -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M34,36 L40,30 L68,30 L74,36 L80,36 C83.3,36 86,38.7 86,42 L86,74 C86,77.3 83.3,80 80,80 L28,80 C24.7,80 22,77.3 22,74 L22,42 C22,38.7 24.7,36 28,36 Z" />
+    <!-- Gradient accent border on body -->
+    <path
+        android:strokeWidth="2.2"
+        android:strokeColor="#38BDF8"
+        android:fillColor="#00000000"
+        android:pathData="M34,36 L40,30 L68,30 L74,36 L80,36 C83.3,36 86,38.7 86,42 L86,74 C86,77.3 83.3,80 80,80 L28,80 C24.7,80 22,77.3 22,74 L22,42 C22,38.7 24.7,36 28,36 Z" />
+    <!-- Outer Lens Ring -->
+    <path
+        android:strokeWidth="2.5"
+        android:strokeColor="#00E5FF"
+        android:fillColor="#0F172A"
+        android:pathData="M54,39 A17,17 0 1,1 53.9,39 Z" />
+    <!-- Inner Lens Glass -->
+    <path
+        android:fillColor="#0284C7"
+        android:pathData="M54,44 A12,12 0 1,1 53.9,44 Z" />
+    <!-- Lens Pupil Core -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M54,49 A7,7 0 1,1 53.9,49 Z" />
+    <!-- Lens Reflection Catchlight -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M51,46 A3,3 0 1,1 50.9,46 Z" />
+    <!-- AI Sparkle 4-pointed star top right -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M78,28 Q78,34 84,34 Q78,34 78,40 Q78,34 72,34 Q78,34 78,28 Z" />
+    <!-- Status / Sensor Red dot -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M30,42 A2.5,2.5 0 1,1 29.9,42 Z" />
+</vector>
