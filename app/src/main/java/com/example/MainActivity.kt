@@ -19,7 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.camera.CameraManager
 import com.example.data.model.PhotoItem
 import com.example.ui.camera.CameraScreen
 import com.example.ui.cloud.CloudSyncScreen
@@ -51,6 +53,8 @@ class MainActivity : ComponentActivity() {
 fun AuraCamMainApp(
     viewModel: CameraViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val cameraManager = remember { CameraManager(context) }
     var currentDestination by remember { mutableStateOf<AppDestination>(AppDestination.Camera) }
     var permissionsGranted by remember { mutableStateOf(false) }
 
@@ -83,6 +87,15 @@ fun AuraCamMainApp(
                 is AppDestination.Camera -> {
                     CameraScreen(
                         viewModel = viewModel,
+                        cameraManager = cameraManager,
+                        onRequestPermission = {
+                            permissionLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.RECORD_AUDIO
+                                )
+                            )
+                        },
                         onNavigateToGallery = { currentDestination = AppDestination.Gallery },
                         onNavigateToCloudSync = { currentDestination = AppDestination.CloudSync }
                     )

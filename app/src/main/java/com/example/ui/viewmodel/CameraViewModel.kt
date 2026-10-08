@@ -224,7 +224,7 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         _cameraState.update { it.copy(proWb = wb) }
     }
 
-    fun triggerShutter() {
+    fun triggerShutter(cameraManager: com.example.camera.CameraManager? = null) {
         val state = _cameraState.value
         viewModelScope.launch {
             if (state.timerSeconds > 0) {
@@ -250,7 +250,7 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
                     _captureFlashEvent.emit(Unit)
                     delay(800)
                     _cameraState.update { it.copy(isProcessingHdrStack = false) }
-                    saveCapturedPhoto()
+                    captureOrFallback(cameraManager)
                 }
                 CaptureMode.NIGHT -> {
                     // Multi-frame Night Sight long exposure countdown
@@ -265,14 +265,33 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
                     _cameraState.update {
                         it.copy(isNightLongExposure = false, nightExposureRemainingSec = 0)
                     }
-                    saveCapturedPhoto()
+                    captureOrFallback(cameraManager)
                 }
                 else -> {
                     // Standard / Portrait / PRO single shot
                     _captureFlashEvent.emit(Unit)
-                    saveCapturedPhoto()
+                    captureOrFallback(cameraManager)
                 }
             }
+        }
+    }
+
+    private suspend fun captureOrFallback(cameraManager: com.example.camera.CameraManager?) {
+        if (cameraManager != null && cameraManager.isHardwareCameraBound.value) {
+            cameraManager.takePicture(
+                onSuccess = { file ->
+                    viewModelScope.launch {
+                        saveCapturedPhoto(realFilePath = file.absolutePath)
+                    }
+                },
+                onError = {
+                    viewModelScope.launch {
+                        saveCapturedPhoto()
+                    }
+                }
+            )
+        } else {
+            saveCapturedPhoto()
         }
     }
 
@@ -309,7 +328,7 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    private suspend fun saveCapturedPhoto() {
+    private suspend fun saveCapturedPhoto(realFilePath: String? = null) {
         val state = _cameraState.value
         val summary = state.detectedObjects.joinToString("، ") { "${it.labelAr} (${(it.confidence * 100).toInt()}%)" }
             .ifEmpty { "مشهد ${state.detectedScene.titleAr}" }
@@ -320,7 +339,8 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
             scene = state.detectedScene,
             isoVal = if (state.captureMode == CaptureMode.PRO) state.proIso else 100,
             shutterVal = if (state.captureMode == CaptureMode.PRO) state.proShutter else "1/250s",
-            detectedSummary = summary
+            detectedSummary = summary,
+            realFilePath = realFilePath
         )
         _recentCapturedPhoto.value = saved
     }

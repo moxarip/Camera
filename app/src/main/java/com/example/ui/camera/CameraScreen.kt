@@ -30,6 +30,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CameraScreen(
     viewModel: CameraViewModel,
+    cameraManager: com.example.camera.CameraManager,
+    onRequestPermission: () -> Unit,
     onNavigateToGallery: () -> Unit,
     onNavigateToCloudSync: () -> Unit,
     modifier: Modifier = Modifier
@@ -57,6 +59,8 @@ fun CameraScreen(
         // Camera Viewfinder (Live CameraX or Simulator)
         CameraPreviewContainer(
             state = cameraState,
+            cameraManager = cameraManager,
+            onRequestPermission = onRequestPermission,
             onTapFocus = { /* Handled with reticle feedback */ },
             modifier = Modifier.fillMaxSize()
         )
@@ -170,7 +174,7 @@ fun CameraScreen(
             CameraBottomBar(
                 state = cameraState,
                 recentPhoto = recentPhoto,
-                onShutterClick = { viewModel.triggerShutter() },
+                onShutterClick = { viewModel.triggerShutter(cameraManager) },
                 onFlipCamera = { viewModel.toggleCameraLens() },
                 onOpenGallery = onNavigateToGallery
             )

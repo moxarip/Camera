@@ -165,7 +165,8 @@ class PhotoRepository(context: Context) {
         isoVal: Int = 100,
         shutterVal: String = "1/250s",
         customTitle: String? = null,
-        detectedSummary: String = "مشهد ذكي"
+        detectedSummary: String = "مشهد ذكي",
+        realFilePath: String? = null
     ): PhotoItem {
         val id = UUID.randomUUID().toString()
         val timestamp = System.currentTimeMillis()
@@ -175,8 +176,8 @@ class PhotoRepository(context: Context) {
         val photo = PhotoItem(
             id = id,
             title = title,
-            filePath = "content://auracam/media/$id",
-            thumbnailUri = "content://auracam/media/$id",
+            filePath = realFilePath ?: "content://auracam/media/$id",
+            thumbnailUri = realFilePath ?: "content://auracam/media/$id",
             timestamp = timestamp,
             mode = mode.name,
             isRaw = isRaw,
